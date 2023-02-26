@@ -2,14 +2,27 @@ import os
 import telebot
 from dotenv import load_dotenv
 import json
-from urllib.request import urlopen
+from urllib.request import urlopen, urlretrieve, build_opener, install_opener
 from urllib.error import HTTPError
+from PIL import Image
 
 load_dotenv()
 
 API_KEY = os.getenv("API_KEY")
 OW_KEY = os.getenv("OW_KEY")
+C_KEY = os.getenv("C_KEY")
 bot = telebot.TeleBot(API_KEY)
+
+@bot.message_handler(commands=["cat"])
+def cat(message):
+	call="https://api.thecatapi.com/v1/images/search?api_key="+C_KEY
+	response = urlopen(call)
+	data = json.loads(response.read())
+	opener = build_opener()
+	opener.addheaders = [('User-Agent', 'TimBot/1.0')]
+	install_opener(opener)
+	urlretrieve(data[0]["url"], "cat.jpg")
+	bot.send_photo(message.chat.id, Image.open("cat.jpg"))
 
 @bot.message_handler(commands=["weather"])
 def greet(message):
@@ -31,6 +44,7 @@ def greet(message):
 		bot.reply_to(message, temp)
 	else:
 		bot.reply_to(message, "Please enter some data")
+
 def processTemp(kelvin):
 	celsius = kelvin-273.15
 	farenheit = (celsius * 9/5)+32
