@@ -52,10 +52,10 @@ def echo(message):
 			bot.send_message(message.chat.id, "I'm either not admin or the original message was deleted")
 
 @bot.message_handler(commands=["weather"])
-def greet(message):
+def weather(message):
 	run = True
 	text=message.text
-	content=message.text.replace("/weather", "").strip()
+	content=message.text.replace("/weather", "").strip().replace(" ", "%20")
 	if(len(content) != 0):
 		call="https://api.openweathermap.org/data/2.5/weather?q="+content+"&appid="+OW_KEY
 		try:
