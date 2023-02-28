@@ -5,6 +5,7 @@ import json
 from urllib.request import urlopen, urlretrieve, build_opener, install_opener
 from urllib.error import HTTPError
 from PIL import Image
+import utils
 
 load_dotenv()
 
@@ -38,17 +39,12 @@ def greet(message):
 #		print(response.read())
 		if(run == True):
 			data = json.loads(response.read())
-			temp = "Current Temperature: \n"+ processTemp(data["main"]["temp"])
+			temp = "Current Temperature: \n"+ utils.processTemp(data["main"]["temp"])
 		else:
 			temp = "There was either an error or the location entered by you is invalid/not found."
 		bot.reply_to(message, temp)
 	else:
 		bot.reply_to(message, "Please enter some data")
-
-def processTemp(kelvin):
-	celsius = kelvin-273.15
-	farenheit = (celsius * 9/5)+32
-	return str(round(celsius, 2))+"°C | "+str(round(farenheit, 2))+"°F | "+str(round(kelvin,2))+"K"
 
 bot.polling()
 
