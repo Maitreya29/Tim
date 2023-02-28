@@ -13,6 +13,22 @@ API_KEY = os.getenv("API_KEY")
 OW_KEY = os.getenv("OW_KEY")
 C_KEY = os.getenv("C_KEY")
 bot = telebot.TeleBot(API_KEY)
+APPROVED_CHATS = os.getenv("APPROVED_CHATS").split(", ")
+
+def isAdmin(id):
+	return bot.get_chat_administrators(id)
+
+@bot.my_chat_member_handler()
+def my_chat_m(message: telebot.types.ChatMemberUpdated):
+	old = message.old_chat_member
+	new = message.new_chat_member
+	if new.status == "member":
+		if(str(message.chat.id) in APPROVED_CHATS):
+	        	bot.send_message(message.chat.id, "Hi, I'm a stupid bot.")
+		else:
+			#bot.send_message(message.chat.id, str(message.chat.id)+str(APPROVED_CHATS))
+			bot.send_message(message.chat.id, "I'm not supposed to be in this group.")
+			bot.leave_chat(message.chat.id)
 
 @bot.message_handler(commands=["cat"])
 def cat(message):
@@ -24,6 +40,16 @@ def cat(message):
 	install_opener(opener)
 	urlretrieve(data[0]["url"], "cat.jpg")
 	bot.send_photo(message.chat.id, Image.open("cat.jpg"))
+
+@bot.message_handler(commands=["echo"])
+def echo(message):
+	content=message.text.replace("/echo", "").strip()
+	try:
+		bot.send_message(message.chat.id, content)
+		bot.delete_message(message.chat.id, message.id)
+	except:
+		if(content != ""):
+			bot.send_message(message.chat.id, "I'm either not admin or the original message was deleted")
 
 @bot.message_handler(commands=["weather"])
 def greet(message):
