@@ -15,9 +15,6 @@ C_KEY = os.getenv("C_KEY")
 bot = telebot.TeleBot(API_KEY)
 APPROVED_CHATS = os.getenv("APPROVED_CHATS").split(", ")
 
-def isAdmin(id):
-	return bot.get_chat_administrators(id)
-
 @bot.my_chat_member_handler()
 def my_chat_m(message: telebot.types.ChatMemberUpdated):
 	old = message.old_chat_member
