@@ -40,6 +40,7 @@ def cat(message):
 	install_opener(opener)
 	urlretrieve(data[0]["url"], "cat.jpg")
 	bot.send_photo(message.chat.id, Image.open("cat.jpg"))
+	os.system("rm -rf cat.jpg")
 
 @bot.message_handler(commands=["echo"])
 def echo(message):
