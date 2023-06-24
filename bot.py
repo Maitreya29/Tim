@@ -60,7 +60,6 @@ def weather(message):
 			response = urlopen(call)
 		except HTTPError as err:
 			run=False
-#		print(response.read())
 		if(run == True):
 			data = json.loads(response.read())
 			temp = "Current Temperature: \n"+ utils.processTemp(data["main"]["temp"])
